@@ -17,9 +17,6 @@ document.addEventListener('DOMContentLoaded', () => {
     let manualStop = false;
     let fullText = '';
 
-    // Modo de teste para ambiente local
-    const testMode = true; // Altere para false em produção
-
     console.log('Iniciando aplicação...');
 
     languages.forEach(language => {
@@ -29,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
         languageSelect.add(option);
     });
 
-    recognition.continuous = true;
+    recognition.continuous = true; // Modo contínuo padrão
     recognition.interimResults = true;
     recognition.lang = languageSelect.value;
 
@@ -58,12 +55,20 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('Texto reconhecido:', fullText + interimText);
         downloadButton.disabled = false;
     };
-    
+
     recognition.onend = () => {
         console.log('Reconhecimento de fala encerrado.');
-        
-        // Reforço para navegadores móveis: reiniciar manualmente se necessário
+
+        // Evitar loops infinitos em dispositivos móveis
         if (recognizing && !manualStop) {
+            if (/Mobi|Android/i.test(navigator.userAgent)) {
+                console.warn('Detecção de dispositivo móvel: Não reiniciando automaticamente.');
+                recognizing = false;
+                startListeningButton.classList.remove('recording');
+                recordButtonText.textContent = 'Comece a gravar';
+                return;
+            }
+
             console.log('Reiniciando reconhecimento de fala automaticamente...');
             try {
                 recognition.start();
@@ -76,13 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
             recordButtonText.textContent = 'Comece a gravar';
         }
     };
-    
-    // Adicione este código para detectar possíveis falhas em dispositivos móveis
-    if (/Mobi|Android/i.test(navigator.userAgent)) {
-        recognition.continuous = false; // Pode resolver problemas no celular
-        console.log('Modo contínuo desativado para dispositivos móveis.');
-    }
-    
+
     recognition.onerror = (event) => {
         console.error('Erro no reconhecimento de fala:', event.error);
         alert(`Erro: ${event.error}. Verifique as permissões ou tente novamente.`);
@@ -98,12 +97,6 @@ document.addEventListener('DOMContentLoaded', () => {
             recognizing = false;
             console.log('Gravação parada manualmente.');
         } else {
-            if (!testMode && location.protocol !== 'https:' && location.hostname !== 'localhost') {
-                alert('Esta aplicação precisa ser acessada via HTTPS para funcionar corretamente no navegador do celular.');
-                console.error('Aplicação não está usando HTTPS.');
-                return;
-            }
-
             console.log('Verificando suporte às APIs de mídia...');
             console.log('User Agent:', navigator.userAgent);
             console.log('navigator.mediaDevices:', !!navigator.mediaDevices);
@@ -121,6 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 .then((stream) => {
                     console.log('Permissão de microfone concedida:', stream);
                     manualStop = false;
+
                     try {
                         recognition.start();
                         recognizing = true;
@@ -129,11 +123,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     } catch (error) {
                         console.error('Erro ao iniciar o reconhecimento:', error);
                         alert('Erro ao iniciar o reconhecimento de fala. Tente novamente.');
-                    }
-
-                    const audioTracks = stream.getAudioTracks();
-                    if (audioTracks.length === 0) {
-                        alert('Não foi possível acessar o microfone. Verifique as configurações do dispositivo.');
                     }
                 })
                 .catch(err => {
