@@ -16,6 +16,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let recognizing = false; // Controla se está gravando
     let manualStop = false; // Variável para rastrear parada manual
+    let fullText = ''; // Armazena o texto completo reconhecido
+    const testMode = false; // Modo de teste para desativar restrições de HTTPS
 
     // Preenche as opções de idioma
     languages.forEach(language => {
@@ -40,8 +42,16 @@ document.addEventListener('DOMContentLoaded', () => {
     downloadButton.disabled = true;
 
     recognition.onresult = (event) => {
-        const result = event.results[event.results.length - 1][0].transcript;
-        resultContainer.textContent = result;
+        let interimText = '';
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+            const transcript = event.results[i][0].transcript;
+            if (event.results[i].isFinal) {
+                fullText += transcript + ' ';
+            } else {
+                interimText += transcript;
+            }
+        }
+        resultContainer.textContent = fullText + interimText;
         downloadButton.disabled = false;
     };
 
@@ -69,8 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
             recognition.stop();
             recognizing = false;
         } else {
-            // Solicita permissão para usar o microfone no dispositivo móvel
-            if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
+            if (!testMode && location.protocol !== 'https:' && location.hostname !== 'localhost') {
                 alert('A aplicação precisa ser acessada via HTTPS para funcionar corretamente no navegador do celular.');
                 return;
             }
@@ -83,7 +92,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     startListeningButton.classList.toggle('recording', recognizing);
                     recordButtonText.textContent = 'Pare de gravar';
 
-                    // Para garantir que o microfone esteja funcionando
                     const audioTracks = stream.getAudioTracks();
                     if (audioTracks.length === 0) {
                         alert('Não foi possível acessar o microfone. Verifique as configurações do dispositivo.');
@@ -97,6 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function clearResults() {
+        fullText = '';
         resultContainer.textContent = '';
         downloadButton.disabled = true;
     }
