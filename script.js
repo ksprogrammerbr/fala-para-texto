@@ -58,9 +58,11 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('Texto reconhecido:', fullText + interimText);
         downloadButton.disabled = false;
     };
-
+    
     recognition.onend = () => {
         console.log('Reconhecimento de fala encerrado.');
+        
+        // Reforço para navegadores móveis: reiniciar manualmente se necessário
         if (recognizing && !manualStop) {
             console.log('Reiniciando reconhecimento de fala automaticamente...');
             try {
@@ -74,7 +76,13 @@ document.addEventListener('DOMContentLoaded', () => {
             recordButtonText.textContent = 'Comece a gravar';
         }
     };
-
+    
+    // Adicione este código para detectar possíveis falhas em dispositivos móveis
+    if (/Mobi|Android/i.test(navigator.userAgent)) {
+        recognition.continuous = false; // Pode resolver problemas no celular
+        console.log('Modo contínuo desativado para dispositivos móveis.');
+    }
+    
     recognition.onerror = (event) => {
         console.error('Erro no reconhecimento de fala:', event.error);
         alert(`Erro: ${event.error}. Verifique as permissões ou tente novamente.`);
