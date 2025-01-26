@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Verifica se a API de reconhecimento de fala está disponível
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) {
         alert('Reconhecimento de fala não é suportado neste navegador. Tente usar o Google Chrome.');
@@ -14,12 +13,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const clearButton = document.querySelector('.btn.clear');
     const downloadButton = document.querySelector('.btn.download');
 
-    let recognizing = false; // Controla se está gravando
-    let manualStop = false; // Variável para rastrear parada manual
-    let fullText = ''; // Armazena o texto completo reconhecido
-    const testMode = false; // Modo de teste para desativar restrições de HTTPS
+    let recognizing = false;
+    let manualStop = false;
+    let fullText = '';
 
-    // Preenche as opções de idioma
+    // Modo de teste para ambiente local
+    const testMode = true; // Altere para false em produção
+
+    console.log('Iniciando aplicação...');
+
     languages.forEach(language => {
         const option = document.createElement('option');
         option.value = language.code;
@@ -33,6 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     languageSelect.addEventListener('change', () => {
         recognition.lang = languageSelect.value;
+        console.log('Idioma alterado para:', recognition.lang);
     });
 
     startListeningButton.addEventListener('click', toggleSpeechRecognition);
@@ -52,12 +55,19 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
         resultContainer.textContent = fullText + interimText;
+        console.log('Texto reconhecido:', fullText + interimText);
         downloadButton.disabled = false;
     };
 
     recognition.onend = () => {
+        console.log('Reconhecimento de fala encerrado.');
         if (recognizing && !manualStop) {
-            recognition.start();
+            console.log('Reiniciando reconhecimento de fala automaticamente...');
+            try {
+                recognition.start();
+            } catch (error) {
+                console.error('Erro ao reiniciar o reconhecimento:', error);
+            }
         } else {
             recognizing = false;
             startListeningButton.classList.remove('recording');
@@ -78,19 +88,40 @@ document.addEventListener('DOMContentLoaded', () => {
             manualStop = true;
             recognition.stop();
             recognizing = false;
+            console.log('Gravação parada manualmente.');
         } else {
             if (!testMode && location.protocol !== 'https:' && location.hostname !== 'localhost') {
-                alert('A aplicação precisa ser acessada via HTTPS para funcionar corretamente no navegador do celular.');
+                alert('Esta aplicação precisa ser acessada via HTTPS para funcionar corretamente no navegador do celular.');
+                console.error('Aplicação não está usando HTTPS.');
+                return;
+            }
+
+            console.log('Verificando suporte às APIs de mídia...');
+            console.log('User Agent:', navigator.userAgent);
+            console.log('navigator.mediaDevices:', !!navigator.mediaDevices);
+
+            if (!navigator.mediaDevices || typeof navigator.mediaDevices.getUserMedia !== 'function') {
+                console.error('navigator.mediaDevices ou getUserMedia não disponíveis.');
+                alert(
+                    'O navegador não suporta ou bloqueou o acesso às APIs de mídia. ' +
+                    'Certifique-se de usar HTTPS e um navegador atualizado (como Chrome ou Firefox).'
+                );
                 return;
             }
 
             navigator.mediaDevices.getUserMedia({ audio: true })
                 .then((stream) => {
+                    console.log('Permissão de microfone concedida:', stream);
                     manualStop = false;
-                    recognition.start();
-                    recognizing = true;
-                    startListeningButton.classList.toggle('recording', recognizing);
-                    recordButtonText.textContent = 'Pare de gravar';
+                    try {
+                        recognition.start();
+                        recognizing = true;
+                        startListeningButton.classList.add('recording');
+                        recordButtonText.textContent = 'Pare de gravar';
+                    } catch (error) {
+                        console.error('Erro ao iniciar o reconhecimento:', error);
+                        alert('Erro ao iniciar o reconhecimento de fala. Tente novamente.');
+                    }
 
                     const audioTracks = stream.getAudioTracks();
                     if (audioTracks.length === 0) {
@@ -98,7 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 })
                 .catch(err => {
-                    alert('Não foi possível acessar o microfone. Verifique as permissões no navegador.');
+                    alert('Erro ao acessar o microfone. Verifique as permissões no navegador ou reinicie o dispositivo.');
                     console.error('Erro ao acessar o microfone:', err);
                 });
         }
@@ -108,6 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
         fullText = '';
         resultContainer.textContent = '';
         downloadButton.disabled = true;
+        console.log('Resultados limpos.');
     }
 
     function downloadResult() {
@@ -126,6 +158,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
+        console.log('Resultado baixado.');
     }
 
     downloadButton.addEventListener('click', downloadResult);
