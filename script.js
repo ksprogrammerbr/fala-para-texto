@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let manualStop = false;
   let fullText = "";
 
-    console.log('Iniciando aplicação...');
+    console.log('Iniciando aplicação..2.');
 
   languages.forEach((language) => {
     const option = document.createElement("option");
