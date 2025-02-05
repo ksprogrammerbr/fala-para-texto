@@ -1,9 +1,9 @@
 # Fala para Texto - KsProgrammer
 
-## Visão Geral
+## 📌 Visão Geral
 Fala para Texto é uma aplicação web projetada para converter fala em texto. O projeto utiliza as capacidades de reconhecimento de fala do navegador para oferecer uma interface amigável e intuitiva. Ele suporta diversos idiomas, permitindo que usuários de diferentes origens interajam e se beneficiem de suas funcionalidades. O design moderno e a funcionalidade robusta tornam-no uma ferramenta valiosa para criar anotações, transcrever conversas ou simplesmente explorar a tecnologia de fala para texto.
 
-## Funcionalidades
+## 💡 Funcionalidades
 - **Seleção de Idioma**: Escolha entre uma ampla variedade de idiomas para transcrever a fala no idioma preferido.
 - **Reconhecimento de Fala em Tempo Real**: Converte palavras faladas em texto de forma instantânea.
 - **Exibição de Resultados**: Mostra o texto transcrito dinamicamente em uma área de resultado editável.
@@ -11,10 +11,10 @@ Fala para Texto é uma aplicação web projetada para converter fala em texto. O
 - **Função Limpar**: Resete a área de transcrição com um único clique.
 - **Design Moderno**: Interface com botões intuitivos, efeitos de hover e um design visual atraente com glassmorphism.
 
-## Tecnologias Utilizadas
-- **HTML5**: Estrutura da página web.
-- **CSS3**: Estilização com efeitos visuais modernos, incluindo glassmorphism.
-- **JavaScript**: Funcionalidade, incluindo reconhecimento de fala e lógica de interação.
+## 🚀 Tecnologias Utilizadas
+- 🎨 **HTML5**: Estrutura da página web.
+- 🎭**CSS3**: Estilização com efeitos visuais modernos, incluindo glassmorphism.
+- ⚡ **JavaScript**: Funcionalidade, incluindo reconhecimento de fala e lógica de interação.
 - **Boxicons**: Biblioteca de ícones para gráficos consistentes e escaláveis.
 
 <div style="display: flex; justify-content: center; gap: 10px; margin-top: 20px;">
@@ -30,7 +30,7 @@ Fala para Texto é uma aplicação web projetada para converter fala em texto. O
 ### Passos
 1. Clone o repositório:
    ```bash
-   git clone https://github.com/username/fala-para-texto.git
+   git clone https://github.com/ksprogrammerbr/fala-para-texto.git
    ```
 2. Navegue até o diretório do projeto:
    ```bash
@@ -65,6 +65,11 @@ Para uma lista completa dos idiomas suportados, consulte o arquivo `languages.js
 2. O usuário seleciona um idioma e inicia o reconhecimento de fala clicando no botão de gravação.
 3. A fala é convertida em texto em tempo real e exibida na interface.
 4. Os usuários podem baixar a transcrição ou limpar o texto para uma nova sessão.
+
+## 📷 Layout
+
+![image](https://github.com/user-attachments/assets/aa558306-6e3e-47be-aa88-849c82c1df7c)
+
 
 ## Melhorias Futuras
 - **Design Aprimorado**: Adicionar mais temas visuais ou opções de personalização para os usuários.
