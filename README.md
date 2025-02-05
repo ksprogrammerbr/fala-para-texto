@@ -17,6 +17,12 @@ Fala para Texto é uma aplicação web projetada para converter fala em texto. O
 - **JavaScript**: Funcionalidade, incluindo reconhecimento de fala e lógica de interação.
 - **Boxicons**: Biblioteca de ícones para gráficos consistentes e escaláveis.
 
+<div>
+  <img src="https://img.shields.io/badge/HTML-239120?style=for-the-badge&logo=html5&logoColor=white">
+  <img src="https://img.shields.io/badge/CSS-239120?&style=for-the-badge&logo=css3&logoColor=white">
+  <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black">
+</div>
+
 ## Instalação e Uso
 ### Requisitos
 - Um navegador moderno com suporte para a API Web Speech.
@@ -72,5 +78,7 @@ Contribuições são bem-vindas! Sinta-se à vontade para enviar um pull request
 ## Licença
 Este projeto é licenciado sob a Licença MIT.
 
-## Créditos
-Projetado e desenvolvido por [KsProgrammerbr].
+## Time e Créditos
+| [<img loading="lazy" src="https://avatars.githubusercontent.com/u/123672196?v=4" width=115><br><sub>KsProgrammer</sub>](https://github.com/ksprogrammerbr) |  [<img loading="lazy" src="https://avatars.githubusercontent.com/u/123096146?v=4" width=115><br><sub>RsProgrammer</sub>](https://github.com/rsprogrammerbr) |
+| :---: | :---: |
+
